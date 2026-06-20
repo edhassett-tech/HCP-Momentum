@@ -5,7 +5,7 @@ import IntakeForm from './IntakeForm';
 import PhoneFrame from './PhoneFrame';
 import ConfirmScreen from './ConfirmScreen';
 import ClarifyScreen from './ClarifyScreen';
-import PlaceholderScreen from './PlaceholderScreen';
+import ActivationScreen from './ActivationScreen';
 import type { GoalId } from '@/lib/activationMap';
 import type { FormState, ParseResponse } from '@/lib/types';
 
@@ -112,7 +112,10 @@ export default function AppShell() {
       )}
 
       {screen === 'placeholder' && (
-        <PlaceholderScreen goalId={chosenGoalId} />
+        <ActivationScreen
+          goalId={chosenGoalId}
+          onRestart={() => { setScreen('intake'); setFocusGoalOnReturn(false); }}
+        />
       )}
     </PhoneFrame>
   );
