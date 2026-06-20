@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import type { FormState } from '@/lib/types';
 
 const INDUSTRIES = [
   'HVAC', 'Plumbing', 'Electrical', 'Handyman', 'Cleaning',
@@ -10,22 +11,38 @@ const INDUSTRIES = [
 
 const EMPLOYEE_OPTIONS = ['1', '2–5', '6–10', '11+'];
 
-interface FormState {
-  firstName: string;
-  businessName: string;
-  employees: string;
-  industry: string;
-  goalText: string;
+interface Props {
+  initialValues?: Partial<FormState>;
+  onStart: (form: FormState) => void;
+  autoFocusGoal?: boolean;
+  onGoalFocused?: () => void;
 }
 
-export default function IntakeForm() {
+export default function IntakeForm({ initialValues, onStart, autoFocusGoal, onGoalFocused }: Props) {
   const [form, setForm] = useState<FormState>({
-    firstName: 'Mike',
-    businessName: 'Rivera HVAC',
-    employees: '2–5',
-    industry: 'Plumbing',
-    goalText: '',
+    firstName:    initialValues?.firstName    ?? 'Mike',
+    businessName: initialValues?.businessName ?? 'Rivera HVAC',
+    employees:    initialValues?.employees    ?? '2–5',
+    industry:     initialValues?.industry     ?? 'Plumbing',
+    goalText:     initialValues?.goalText     ?? '',
   });
+
+  const goalRef = useRef<HTMLTextAreaElement>(null);
+
+  // Focus goal field when returning from "Not quite"
+  useEffect(() => {
+    if (autoFocusGoal && goalRef.current) {
+      const el = goalRef.current;
+      // Small delay lets the DOM settle after screen transition
+      const t = setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+        onGoalFocused?.();
+      }, 80);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function set(field: keyof FormState, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -33,7 +50,7 @@ export default function IntakeForm() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log('Intake form state:', form);
+    onStart(form);
   }
 
   return (
@@ -98,6 +115,7 @@ export default function IntakeForm() {
           <Field label="What's the first thing you want to get done with Housecall Pro?">
             <div className="relative">
               <textarea
+                ref={goalRef}
                 value={form.goalText}
                 onChange={e => set('goalText', e.target.value)}
                 placeholder="e.g. I want to stop chasing payments — customers keep forgetting and it's hurting my cash flow."

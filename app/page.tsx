@@ -1,5 +1,5 @@
-import IntakeForm from './components/IntakeForm';
+import AppShell from './components/AppShell';
 
 export default function Home() {
-  return <IntakeForm />;
+  return <AppShell />;
 }
