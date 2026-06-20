@@ -112,7 +112,7 @@ export default function IntakeForm({ initialValues, onStart, autoFocusGoal, onGo
             </div>
           </Field>
 
-          <Field label="What's the first thing you want to get done with Housecall Pro?">
+          <Field label="What is the main goal of your business?">
             <div className="relative">
               <textarea
                 ref={goalRef}

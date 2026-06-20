@@ -1,0 +1,68 @@
+﻿Dev server already running at localhost:3000.
+
+  [ 1] I want to get more jobs on the books... PASS
+  [ 2] Tired of chasing checks, I need to get paid quicke... PASS
+  [ 3] I want more customers leaving me reviews... PASS
+  [ 4] Summer's busy and I keep losing customers because ... PASS
+  [ 5] Customers always say they didn't know I was coming... PASS
+  [ 6] My days are chaos, I lose track of who's where... PASS
+  [ 7] I do great work but nobody finds me online... PASS
+  [ 8] Book more jobs and stop doing invoices by hand at ... PASS
+  [ 9] I want to grow my business... PASS
+  [10] make more money... PASS
+  [11] idk just looking around... PASS
+  [12] (blank)... PASS
+  [13] I want GPS tracking on all my trucks... REVIEW
+  [14] Can you answer my phones with AI?... REVIEW
+  [15] I need to hire two more techs... REVIEW
+  [16] halp me git my plumbin jobs on the calendar... FAIL
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#  Input                                                  Expected                        Actual goal                     Conf   Abs   Result
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+1  I want to get more jobs on the books                   book_more_jobs                  book_more_jobs                  high   false PASS
+2  Tired of chasing checks, I need to get paid quicker    get_paid_faster                 get_paid_faster                 high   false PASS
+3  I want more customers leaving me reviews               win_repeat_business             win_repeat_business             high   false PASS
+4  Summer's busy and I keep losing customers because I'm …book_more_jobs                  book_more_jobs                  high   false PASS
+5  Customers always say they didn't know I was coming     improve_customer_communication  improve_customer_communication  high   false PASS
+6  My days are chaos, I lose track of who's where         stay_on_top                     stay_on_top                     high   false PASS
+7  I do great work but nobody finds me online             book_more_jobs OR win_repeat_bu…win_repeat_business             high   false PASS
+8  Book more jobs and stop doing invoices by hand at nigh…book_more_jobs                  book_more_jobs                  high   false PASS
+9  I want to grow my business                             abstain=true                    null                            low    true  PASS
+10 make more money                                        abstain=true                    null                            low    true  PASS
+11 idk just looking around                                abstain=true                    null                            low    true  PASS
+12 (blank)                                                abstain=true                    null                            low    true  PASS
+13 I want GPS tracking on all my trucks                   — REVIEW —                      stay_on_top                     high   false REVIEW
+14 Can you answer my phones with AI?                      — REVIEW —                      improve_customer_communication  high   false REVIEW
+15 I need to hire two more techs                          — REVIEW —                      null                            low    true  REVIEW
+16 halp me git my plumbin jobs on the calendar            stay_on_top                     book_more_jobs                  high   false FAIL
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+── Summary ──────────────────────────────────────────────────────────────────
+Top-1 accuracy  (strict baseline — rows 1,2,3,5,6,16):  5/6
+Pass rate       (flexible — rows 4,7,8):                 3/3
+Abstention rate (rows 9–12):                             4/4
+Out-of-catalog goals across all 16 rows:                 0  (should be 0)
+
+── Review cases (manual judgment) ───────────────────────────────────────────
+
+Case 13: "I want GPS tracking on all my trucks"
+  Prompt note:  out-of-catalog hardware request — flag whether model abstains or force-maps
+  primaryGoal:  stay_on_top
+  abstain:      false
+  confidence:   high
+  restatement:  You want GPS tracking on all your trucks so you can keep better visibility and control over your team and operations.
+
+Case 14: "Can you answer my phones with AI?"
+  Prompt note:  out-of-catalog AI feature request — flag whether model abstains or force-maps
+  primaryGoal:  improve_customer_communication
+  abstain:      false
+  confidence:   high
+  restatement:  You want an AI system to answer your phones so you don't miss customer calls and can stay focused on the work.
+
+Case 15: "I need to hire two more techs"
+  Prompt note:  HR/staffing — expect abstain or graceful non-catalog handling; flag if force-fitted to a goal
+  primaryGoal:  null
+  abstain:      true
+  confidence:   low
+  restatement:  Hiring more technicians is a big move — what's driving that need right now? Is it that you've got more work than you can handle, or are you looking to smooth out your operations?
