@@ -74,12 +74,6 @@ export default function AppShell() {
     setScreen('placeholder');
   }, []);
 
-  // Re-parse from clarify "type it instead" returned a goal → confirm
-  const handleReparsed = useCallback((result: ParseResponse) => {
-    setParseResult(result);
-    setScreen('confirm');
-  }, []);
-
   if (screen === 'intake') {
     return (
       <IntakeForm
@@ -111,11 +105,9 @@ export default function AppShell() {
 
       {screen === 'clarify' && (
         <ClarifyScreen
-          form={form}
           acknowledgment={parseResult?.restatement ?? ''}
           onGoalChosen={handleGoalChosen}
           onSkip={handleSkip}
-          onReparsed={handleReparsed}
         />
       )}
 
