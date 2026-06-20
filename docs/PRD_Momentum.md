@@ -6,7 +6,7 @@
 
 Housecall Pro's initial product experience presents new users with too many competing actions, a lengthy onboarding process, and limited guidance on what to do next.
 
-Users sign up with a specific business goal in mind, but the current experience surfaces a broad set of features and setup tasks at once. The onboarding cannot adapt to that goal because it never captures it in any usable form — every Pro lands in the same one-size-fits-all path. This creates cognitive overload, slows time-to-value, and disconnects setup from the outcome the Pro actually came for.
+Users sign up, likely with specific goal or pain-point, but the current experience surfaces a broad set of features and setup tasks at once. The onboarding cannot adapt to that goal because it never captures it in any usable form — every Pro lands in the same one-size-fits-all path. This creates cognitive overload, slows time-to-value, and disconnects setup from the outcome the Pro actually came for.
 
 As a result:
 
@@ -27,7 +27,7 @@ Shift onboarding from a generic setup checklist to a **personalized activation j
 Two facts from the funnel data shape the bet:
 
 * **Breadth of feature usage predicts conversion** (number of *unique* features tried), while depth does not. So the job is to route Pros to the *right several* activation steps quickly, not to push volume on any one.
-* **~50% of trial-to-paid conversions happen on day one.** So personalization has to land in the first session, not via a drip over two weeks.
+* **~50% of trial-to-paid conversions happen on day one.** So momentum has to land in the first session, not via a drip over two weeks.
 
 The lever: capture the Pro's goal as free-form input, use AI to interpret it, and use that interpretation to drive a focused, relevant activation path that gets them to value fast — on day one.
 
@@ -74,7 +74,8 @@ Users get limited feedback that they're moving toward success.
 
 ## Proposed Solution: AI-Powered Guided Activation
 
-Capture the Pro's goal in their own words at the start of onboarding, use AI to interpret it, and route them into a focused activation path.
+Capture the Pro's goal in their own words at the start of onboarding, use AI to interpret it, and route them into a focused activation path. 
+NOTE: for the purpose of this prototype, the specific open end field was not built into the sign-up flow, it was assumed. However, there are a few ways to make this an easy input that should be considered if building out. For isntance, open field with suggestions, voice-to-text, etc. 
 
 The flow:
 
