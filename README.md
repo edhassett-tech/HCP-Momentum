@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Momentum
 
-## Getting Started
+AI-powered guided activation prototype for Housecall Pro's free trial — built for the Director, Product Management (Growth & PLG) case study.
 
-First, run the development server:
+A Pro states their first goal in their own words. AI parses it into structured intent, the Pro confirms or corrects it, and a personalized activation path is generated from there. AI is used in exactly one place — interpreting ambiguous input — everything downstream is deterministic.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Process docs
+
+See [`docs/`](./docs) for the full process trail:
+* `PRD_Momentum.md` — problem framing, solution design, AI architecture, scope
+* `HCP_Activation_Map.md` — feature catalog and goal→milestone decomposition
+* `Eval_Spec_Goal_Intent_Parser.md` — success criteria, error taxonomy, test set
+* `Eval_Results.md` — actual eval run output and analysis
+* `Build_Spec_Momentum_Prototype.md` — architecture and build order
+
+## Run it locally
+
+The app lives in `hcp-momentum/`.
+
+```
+cd hcp-momentum
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env.local` file in `hcp-momentum/` with:
+```
+ANTHROPIC_API_KEY=your-key-here
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Then:
+```
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000). Best viewed at mobile width — the UI is designed mobile-first.
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js (App Router) + TypeScript + Tailwind. One server route (`/api/parse`) calls the Anthropic API (Claude Haiku) to keep the key server-side. Everything else — path generation, milestone sequencing — is deterministic, driven by `lib/activationMap.ts`.
