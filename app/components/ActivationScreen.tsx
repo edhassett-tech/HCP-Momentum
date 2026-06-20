@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GoalId, GOALS, DEFAULT_STARTER, Milestone } from '@/lib/activationMap';
 
 type RowStatus = 'pending' | 'celebrating' | 'done' | 'skipped';
@@ -17,22 +17,33 @@ export default function ActivationScreen({ goalId, onComplete, onRestart }: Prop
   const goalLabel = goal ? goal.label : 'Getting started';
 
   const [statuses, setStatuses] = useState<RowStatus[]>(milestones.map(() => 'pending'));
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  // Count celebrating + done for the progress bar so it updates immediately on Mark done
-  const completedCount = statuses.filter(s => s === 'done' || s === 'celebrating').length;
+  // Cleanup all pending timers on unmount
+  useEffect(() => () => { timers.current.forEach(clearTimeout); }, []);
+
+  // celebrating counts for progress display; only done+skipped counts as "resolved"
+  const resolvedCount = statuses.filter(s => s === 'done' || s === 'celebrating' || s === 'skipped').length;
   const allResolved = statuses.every(s => s === 'done' || s === 'skipped');
 
+  // Brief pause so the all-resolved state is visible before navigating
   useEffect(() => {
-    if (allResolved) onComplete();
+    if (allResolved) {
+      const t = setTimeout(onComplete, 800);
+      timers.current.push(t);
+      return () => clearTimeout(t);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allResolved]);
 
   function markDone(i: number) {
     setStatuses(prev => { const n = [...prev]; n[i] = 'celebrating'; return n; });
+    const t = setTimeout(() => {
+      setStatuses(prev => { const n = [...prev]; n[i] = 'done'; return n; });
+    }, 2000);
+    timers.current.push(t);
   }
-  function confirmCelebration(i: number) {
-    setStatuses(prev => { const n = [...prev]; n[i] = 'done'; return n; });
-  }
+
   function skip(i: number) {
     setStatuses(prev => { const n = [...prev]; n[i] = 'skipped'; return n; });
   }
@@ -46,20 +57,24 @@ export default function ActivationScreen({ goalId, onComplete, onRestart }: Prop
         <h2 className="text-xl font-bold text-slate-900 leading-snug">{goalLabel}</h2>
       </div>
 
-      {/* Progress — fills immediately when Mark done is tapped (celebrating counts) */}
+      {/* Progress — celebrating counts immediately */}
       <div className="flex items-center gap-2">
         <div className="flex-1 flex gap-1.5">
           {milestones.map((_, i) => (
             <div
               key={i}
               className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                statuses[i] === 'done' || statuses[i] === 'celebrating' ? 'bg-green-500' : 'bg-slate-200'
+                statuses[i] === 'done' || statuses[i] === 'celebrating'
+                  ? 'bg-green-500'
+                  : statuses[i] === 'skipped'
+                  ? 'bg-slate-300'
+                  : 'bg-slate-200'
               }`}
             />
           ))}
         </div>
         <span className="text-xs font-medium text-slate-500 shrink-0 tabular-nums">
-          {completedCount} of {milestones.length} done
+          {resolvedCount} of {milestones.length} done
         </span>
       </div>
 
@@ -100,27 +115,20 @@ export default function ActivationScreen({ goalId, onComplete, onRestart }: Prop
             );
           }
 
+          // Celebrating: transient confirmation, no button — auto-settles to done after 1.5s
           if (status === 'celebrating') {
             return (
-              <div key={i} className="flex flex-col gap-3 px-4 py-3.5 rounded-2xl bg-green-50 border border-green-200">
-                <div className="flex items-start gap-3">
-                  <span className="text-xl leading-none mt-0.5">🎉</span>
-                  <div>
-                    <p className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">Nice work!</p>
-                    <p className="text-sm font-medium text-slate-900 leading-snug">{m.firstValue}</p>
-                  </div>
+              <div key={i} className="flex items-start gap-3 px-4 py-3.5 rounded-2xl bg-green-50 border border-green-200">
+                <span className="text-lg leading-none mt-0.5 shrink-0">🎉</span>
+                <div>
+                  <p className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">Nice work!</p>
+                  <p className="text-sm font-medium text-slate-900 leading-snug">{m.firstValue}</p>
                 </div>
-                <button
-                  onClick={() => confirmCelebration(i)}
-                  className="h-9 w-full rounded-xl bg-green-600 text-white text-sm font-semibold hover:bg-green-700 active:bg-green-800 transition-colors"
-                >
-                  Continue →
-                </button>
               </div>
             );
           }
 
-          // pending
+          // Pending
           return (
             <div key={i} className="flex flex-col gap-3 px-4 py-4 rounded-2xl border border-slate-200 bg-white">
               <div>
