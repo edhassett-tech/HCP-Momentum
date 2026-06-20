@@ -16,9 +16,23 @@ export default function ConfirmScreen({ firstName, primaryGoal, onConfirm, onNot
       <h2 className="text-2xl font-bold text-slate-900 leading-snug mb-2">
         Sounds like your main goal is:
       </h2>
-      <p className="text-xl font-semibold text-blue-600 mb-auto">
+      <p className="text-xl font-semibold text-blue-600 mb-4">
         {goal?.label ?? primaryGoal}
       </p>
+
+      {goal && (
+        <div className="mb-auto">
+          <p className="text-sm text-slate-500 mb-2">With this, you can:</p>
+          <ul className="flex flex-col gap-1.5">
+            {goal.milestones.map((m, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-blue-400 mt-0.5 shrink-0">•</span>
+                <span className="text-sm text-slate-700">{m.title}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3 pt-8">
         <button

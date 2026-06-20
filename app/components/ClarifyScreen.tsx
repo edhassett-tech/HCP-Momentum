@@ -41,6 +41,10 @@ export default function ClarifyScreen({ acknowledgment, onGoalChosen, onSkip }: 
       >
         Skip for now
       </button>
+
+      <span className="text-xs text-slate-300 text-center py-1 cursor-default select-none">
+        Prefer to chat?
+      </span>
     </div>
   );
 }
