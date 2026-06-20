@@ -1,24 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GoalId, GOALS, DEFAULT_STARTER, Milestone } from '@/lib/activationMap';
 
 type RowStatus = 'pending' | 'celebrating' | 'done' | 'skipped';
 
 interface Props {
   goalId: GoalId | null;
+  onComplete: () => void;
   onRestart: () => void;
 }
 
-export default function ActivationScreen({ goalId, onRestart }: Props) {
+export default function ActivationScreen({ goalId, onComplete, onRestart }: Props) {
   const goal = goalId ? GOALS.find(g => g.id === goalId) : null;
   const milestones: Milestone[] = goal ? goal.milestones : DEFAULT_STARTER;
   const goalLabel = goal ? goal.label : 'Getting started';
 
   const [statuses, setStatuses] = useState<RowStatus[]>(milestones.map(() => 'pending'));
 
-  const completedCount = statuses.filter(s => s === 'done').length;
+  // Count celebrating + done for the progress bar so it updates immediately on Mark done
+  const completedCount = statuses.filter(s => s === 'done' || s === 'celebrating').length;
   const allResolved = statuses.every(s => s === 'done' || s === 'skipped');
+
+  useEffect(() => {
+    if (allResolved) onComplete();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allResolved]);
 
   function markDone(i: number) {
     setStatuses(prev => { const n = [...prev]; n[i] = 'celebrating'; return n; });
@@ -30,17 +37,6 @@ export default function ActivationScreen({ goalId, onRestart }: Props) {
     setStatuses(prev => { const n = [...prev]; n[i] = 'skipped'; return n; });
   }
 
-  if (allResolved) {
-    return (
-      <AllDoneState
-        goalLabel={goalLabel}
-        milestones={milestones}
-        statuses={statuses}
-        onRestart={onRestart}
-      />
-    );
-  }
-
   return (
     <div className="flex flex-col px-6 pt-8 pb-6 gap-6">
 
@@ -50,14 +46,14 @@ export default function ActivationScreen({ goalId, onRestart }: Props) {
         <h2 className="text-xl font-bold text-slate-900 leading-snug">{goalLabel}</h2>
       </div>
 
-      {/* Progress */}
+      {/* Progress — fills immediately when Mark done is tapped (celebrating counts) */}
       <div className="flex items-center gap-2">
         <div className="flex-1 flex gap-1.5">
           {milestones.map((_, i) => (
             <div
               key={i}
               className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                statuses[i] === 'done' ? 'bg-green-500' : 'bg-slate-200'
+                statuses[i] === 'done' || statuses[i] === 'celebrating' ? 'bg-green-500' : 'bg-slate-200'
               }`}
             />
           ))}
@@ -154,69 +150,6 @@ export default function ActivationScreen({ goalId, onRestart }: Props) {
       <button
         onClick={onRestart}
         className="text-xs text-slate-400 hover:text-slate-600 text-center transition-colors py-1"
-      >
-        Skip to explore everything
-      </button>
-    </div>
-  );
-}
-
-function AllDoneState({
-  goalLabel,
-  milestones,
-  statuses,
-  onRestart,
-}: {
-  goalLabel: string;
-  milestones: Milestone[];
-  statuses: RowStatus[];
-  onRestart: () => void;
-}) {
-  const completedCount = statuses.filter(s => s === 'done').length;
-
-  return (
-    <div className="flex flex-col items-center px-6 pt-10 pb-8 gap-5 flex-1">
-      <span className="text-5xl">{completedCount > 0 ? '🎉' : '👍'}</span>
-
-      <div className="text-center">
-        <p className="text-xs font-semibold tracking-widest text-green-500 uppercase mb-2">
-          {completedCount === milestones.length ? 'All done' : 'Plan saved'}
-        </p>
-        <h2 className="text-xl font-bold text-slate-900 mb-1">
-          {completedCount === milestones.length ? "You're off to a great start" : "You're set up and ready"}
-        </h2>
-        <p className="text-sm text-slate-500 leading-relaxed">
-          {completedCount} of {milestones.length} steps completed for{' '}
-          <span className="font-medium text-slate-700">{goalLabel}</span>.
-        </p>
-      </div>
-
-      <div className="w-full flex flex-col gap-2">
-        {milestones.map((m, i) => {
-          const isDone = statuses[i] === 'done';
-          return (
-            <div key={i} className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl ${isDone ? 'bg-green-50' : 'bg-slate-50'}`}>
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${isDone ? 'bg-green-500' : 'border-2 border-slate-300'}`}>
-                {isDone ? (
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                ) : (
-                  <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                )}
-              </div>
-              <p className={`text-sm font-medium ${isDone ? 'text-slate-700' : 'text-slate-400'}`}>{m.title}</p>
-              {!isDone && <span className="text-xs text-slate-400 ml-auto">skipped</span>}
-            </div>
-          );
-        })}
-      </div>
-
-      <button
-        onClick={onRestart}
-        className="text-xs text-slate-400 hover:text-slate-600 transition-colors py-1 mt-auto"
       >
         Skip to explore everything
       </button>

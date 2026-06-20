@@ -6,10 +6,11 @@ import PhoneFrame from './PhoneFrame';
 import ConfirmScreen from './ConfirmScreen';
 import ClarifyScreen from './ClarifyScreen';
 import ActivationScreen from './ActivationScreen';
+import GoalSelectScreen from './GoalSelectScreen';
 import type { GoalId } from '@/lib/activationMap';
 import type { FormState, ParseResponse } from '@/lib/types';
 
-type Screen = 'intake' | 'loading' | 'confirm' | 'clarify' | 'placeholder';
+type Screen = 'intake' | 'loading' | 'confirm' | 'clarify' | 'activation' | 'goal-select' | 'dashboard';
 
 const FALLBACK: ParseResponse = {
   primaryGoal: null,
@@ -56,7 +57,7 @@ export default function AppShell() {
 
   const handleConfirm = useCallback((goalId: GoalId) => {
     setChosenGoalId(goalId);
-    setScreen('placeholder');
+    setScreen('activation');
   }, []);
 
   const handleNotQuite = useCallback(() => {
@@ -66,12 +67,21 @@ export default function AppShell() {
 
   const handleGoalChosen = useCallback((goalId: GoalId) => {
     setChosenGoalId(goalId);
-    setScreen('placeholder');
+    setScreen('activation');
   }, []);
 
   const handleSkip = useCallback(() => {
     setChosenGoalId(null);
-    setScreen('placeholder');
+    setScreen('activation');
+  }, []);
+
+  const handleActivationComplete = useCallback(() => {
+    setScreen('goal-select');
+  }, []);
+
+  const handleGoalStart = useCallback((goalId: GoalId) => {
+    setChosenGoalId(goalId);
+    setScreen('activation');
   }, []);
 
   if (screen === 'intake') {
@@ -111,11 +121,29 @@ export default function AppShell() {
         />
       )}
 
-      {screen === 'placeholder' && (
+      {screen === 'activation' && (
         <ActivationScreen
+          key={chosenGoalId ?? 'default'}
           goalId={chosenGoalId}
+          onComplete={handleActivationComplete}
           onRestart={() => { setScreen('intake'); setFocusGoalOnReturn(false); }}
         />
+      )}
+
+      {screen === 'goal-select' && (
+        <GoalSelectScreen
+          firstName={form.firstName}
+          completedGoalId={chosenGoalId}
+          onGoalStart={handleGoalStart}
+          onDashboard={() => setScreen('dashboard')}
+        />
+      )}
+
+      {screen === 'dashboard' && (
+        <div className="flex flex-col items-center justify-center flex-1 gap-2">
+          <p className="text-lg font-semibold text-slate-900">Dashboard</p>
+          <p className="text-sm text-slate-400">Main product experience goes here</p>
+        </div>
       )}
     </PhoneFrame>
   );
