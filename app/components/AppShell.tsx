@@ -112,6 +112,7 @@ export default function AppShell() {
       {screen === 'clarify' && (
         <ClarifyScreen
           form={form}
+          acknowledgment={parseResult?.restatement ?? ''}
           onGoalChosen={handleGoalChosen}
           onSkip={handleSkip}
           onReparsed={handleReparsed}

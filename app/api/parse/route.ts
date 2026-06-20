@@ -21,7 +21,9 @@ Rules:
 2. Abstain (set "abstain": true, "primaryGoal": null) when the goal is vague ("grow my business", "make more money"), empty, or clearly outside the catalog (unrelated to running a field service business).
 3. "secondaryGoal" is a second catalog ID if a clear secondary theme is present, otherwise null.
 4. "confidence": "high" for a clean match, "medium" if plausible but implicit, "low" if a stretch.
-5. "restatement": one plain-language sentence that echoes the pro's actual words and names their core intent.
+5. "restatement":
+   - If NOT abstaining: one plain-language sentence that echoes the pro's actual words and names their core intent.
+   - If abstaining: one short, warm, curious sentence addressed to the pro. If they wrote something, weave in their actual words and invite them to narrow down (e.g. "Growing your business can mean a lot of things — what feels most pressing right now?"). If they wrote nothing, invite them to share what they want first. Never name a catalog goal ID, never promise a specific feature, never explain that you are abstaining or why.
 6. Return ONLY valid JSON — no prose, no markdown fences, no extra keys.
 
 Schema:
