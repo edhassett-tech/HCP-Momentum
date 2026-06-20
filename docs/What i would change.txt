@@ -3,6 +3,7 @@ What I would Change:
 -prioritized goals against key activation, not static map
 -List based on more than just goal (company size, industry, campaign or tool interaction): this should be driven by data on previous customers - what features do they use most based on cohort
 -Design/UI update
+Allow users to adjust goal(s) more freely - this is stated in PRD but was not built
 -Multi-goal path (see screenshot) 
 -Not quite path should go to more robust selector with option to chat 
 -Integration into dashboard for those who leave screen
