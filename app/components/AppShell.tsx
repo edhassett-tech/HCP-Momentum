@@ -100,10 +100,10 @@ export default function AppShell() {
         </div>
       )}
 
-      {screen === 'confirm' && parseResult && (
+      {screen === 'confirm' && parseResult?.primaryGoal && (
         <ConfirmScreen
           firstName={form.firstName}
-          result={parseResult}
+          primaryGoal={parseResult.primaryGoal}
           onConfirm={handleConfirm}
           onNotQuite={handleNotQuite}
         />
