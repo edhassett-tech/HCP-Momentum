@@ -74,7 +74,7 @@ Users get limited feedback that they're moving toward success.
 
 ## Proposed Solution: AI-Powered Guided Onboarding
 
-Capture the Pro's goal in their own words at the start of onboarding, use AI to interpret it, and route them into a focused activation path. 
+Capture the Pro's goal in their own words at the start of onboarding, use AI to interpret it, and route them into a focused 'get started' or onboarding path. 
 NOTE: for the purpose of this prototype, the specific open end field was not built into the sign-up flow, it was assumed. However, there are a few ways to make this an easy input that should be considered if building out. For isntance, open field with suggestions, voice-to-text, etc. 
 
 The flow:
@@ -117,7 +117,7 @@ The AI interprets and routes. It never executes on the Pro's behalf.
 * **Low-confidence abstention.** On empty or ambiguous input ("idk, just looking"), the AI does not guess. It asks one clarifying question or drops to a safe default path.
 * **Constrained output.** The AI can only map to goals and features that exist in Housecall Pro. It cannot invent or promise something the product doesn't do.
 * **Always correctable.** The Pro can change goal or path at any point; nothing is locked.
-* **Trust compounds.** Early interpretations that are fast, accurate, and trivially correctable build confidence that carries into later recommendations.
+* **Build initial trust.** Early interpretations that are fast, accurate, and trivially correctable build confidence that carries into later recommendations.
 
 ---
 
