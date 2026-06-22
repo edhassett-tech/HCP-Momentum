@@ -72,7 +72,7 @@ Users get limited feedback that they're moving toward success.
 
 ---
 
-## Proposed Solution: AI-Powered Guided Activation
+## Proposed Solution: AI-Powered Guided Onboarding
 
 Capture the Pro's goal in their own words at the start of onboarding, use AI to interpret it, and route them into a focused activation path. 
 NOTE: for the purpose of this prototype, the specific open end field was not built into the sign-up flow, it was assumed. However, there are a few ways to make this an easy input that should be considered if building out. For isntance, open field with suggestions, voice-to-text, etc. 
